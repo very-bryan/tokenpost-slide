@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원 혜택 비교</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .slide-container {
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        padding: 20px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e2e8f0;
+        background-color: #fff;
+        z-index: 10;
+        flex-shrink: 0;
+    }
+
+    .header-title {
+        font-size: clamp(16px, 2.2vw, 24px);
+        font-weight: 800;
+        color: #1e3a8a;
+        letter-spacing: -0.5px;
+    }
+
+    .page-number {
+        font-size: 14px;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .content-area {
+        flex: 1;
+        padding: 30px 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f8fafc;
+        justify-content: center;
+    }
+
+    .comparison-wrapper {
+        width: 100%;
+        max-width: 1100px;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        margin-top: 15px;
+    }
+
+    /* Desktop table layout */
+    .comparison-header {
+        display: grid;
+        grid-template-columns: 220px 1fr 1fr;
+        background-color: #f1f5f9;
+        border-bottom: 2px solid #e2e8f0;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .header-cell {
+        padding: 20px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 16px;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .header-cell.brand-tp {
+        background-color: #fff;
+        color: #64748b;
+    }
+
+    .header-cell.brand-vc {
+        background-color: #eff6ff;
+        color: #2563eb;
+        font-size: 17px;
+        position: relative;
+        border-top-right-radius: 20px;
+    }
+
+    .recommended-badge {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #2563eb;
+        color: white;
+        font-size: 11px;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-weight: 800;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.4);
+        z-index: 20;
+        white-space: nowrap;
+    }
+
+    .comparison-row {
+        display: grid;
+        grid-template-columns: 220px 1fr 1fr;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background-color 0.2s;
+    }
+
+    .comparison-row:last-child {
+        border-bottom: none;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .comparison-row:hover {
+        background-color: #fafafa;
+    }
+
+    .feature-cell {
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        color: #334155;
+        font-weight: 600;
+        background-color: #f8fafc;
+        border-right: 1px solid #f1f5f9;
+        font-size: 15px;
+    }
+
+    .comparison-row:last-child .feature-cell {
+        border-bottom-left-radius: 20px;
+    }
+
+    .feature-icon {
+        width: 34px;
+        height: 34px;
+        background-color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        color: #64748b;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        flex-shrink: 0;
+    }
+
+    .data-cell {
+        padding: 18px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 15px;
+        color: #475569;
+    }
+
+    .data-cell.highlight {
+        background-color: #eff6ff;
+        color: #1e40af;
+        font-weight: 700;
+    }
+
+    .comparison-row:last-child .data-cell.highlight {
+        border-bottom-right-radius: 20px;
+    }
+
+    .check-icon {
+        color: #10b981;
+        font-size: 18px;
+        margin-right: 6px;
+    }
+
+    .very-coin-badge {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+    }
+
+    .very-coin-badge.large {
+        background-color: #2563eb;
+        color: white;
+        font-size: 16px;
+        padding: 8px 20px;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+    }
+
+    .bottom-summary {
+        margin-top: 24px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        max-width: 1100px;
+    }
+
+    .summary-card {
+        background-color: #1e293b;
+        color: white;
+        padding: 18px 32px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .summary-icon {
+        background-color: #3b82f6;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .summary-text {
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    .summary-highlight {
+        color: #60a5fa;
+        font-weight: 700;
+    }
+
+    /* Navigation */
+    .slide-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+    .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+    .nav-btn.prev { background: #f1f5f9; color: #475569; }
+    .nav-btn.prev:hover { background: #e2e8f0; }
+    .nav-btn.next { background: #3b82f6; color: white; }
+    .nav-btn.next:hover { background: #2563eb; }
+    .nav-btn.hidden { visibility: hidden; }
+    .nav-dots { display: flex; gap: 8px; align-items: center; }
+    .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e0; transition: all 0.2s; text-decoration: none; }
+    .nav-dot:hover { background: #94a3b8; }
+    .nav-dot.active { background: #3b82f6; width: 28px; border-radius: 5px; }
+    .slide-container { padding-bottom: 60px; }
+
+    /* Mobile: Card layout instead of table */
+    @media (max-width: 768px) {
+        .header {
+            padding: 16px 20px;
+        }
+
+        .content-area {
+            padding: 20px 16px;
+            justify-content: flex-start;
+        }
+
+        .comparison-wrapper {
+            margin-top: 8px;
+        }
+
+        .comparison-header {
+            display: none;
+        }
+
+        .comparison-row {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 16px;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .feature-cell {
+            background-color: transparent;
+            border-right: none;
+            padding: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .data-cell {
+            padding: 10px 0;
+            justify-content: flex-start;
+            text-align: left;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .data-cell::before {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .comparison-row .data-cell:nth-child(2)::before {
+            content: '일반 구독자';
+        }
+
+        .comparison-row .data-cell:nth-child(3)::before {
+            content: '베리챗 회원';
+        }
+
+        .data-cell.highlight {
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-top: 4px;
+        }
+
+        .summary-card {
+            border-radius: 16px;
+            padding: 16px 20px;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .summary-text {
+            font-size: 14px;
+        }
+
+        .very-coin-badge.large {
+            font-size: 14px;
+            padding: 6px 16px;
+        }
+    }
+
+    /* Tablet */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .content-area {
+            padding: 24px 24px;
+        }
+
+        .comparison-header {
+            grid-template-columns: 180px 1fr 1fr;
+        }
+
+        .comparison-row {
+            grid-template-columns: 180px 1fr 1fr;
+        }
+
+        .header-cell {
+            font-size: 14px;
+            padding: 16px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="slide-container">
+    <div class="header">
+        <p class="header-title">회원 혜택 비교: 토큰포스트 구독자 vs 베리챗 회원</p>
+        <p class="page-number">04</p>
+    </div>
+
+    <div class="content-area">
+        <div class="comparison-wrapper">
+            <div class="comparison-header">
+                <div class="header-cell">구분</div>
+                <div class="header-cell brand-tp">
+                    <i class="far fa-newspaper"></i> 토큰포스트 일반 구독자
+                </div>
+                <div class="header-cell brand-vc">
+                    <div class="recommended-badge">BEST CHOICE</div>
+                    <i class="fas fa-comment-dots"></i> 베리챗 연동 회원
+                </div>
+            </div>
+
+            <!-- Row 1: VERY Coin -->
+            <div class="comparison-row">
+                <div class="feature-cell">
+                    <div class="feature-icon" style="color: #f59e0b;">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    VERY 코인 지급
+                </div>
+                <div class="data-cell">
+                    <div class="very-coin-badge">월 최대 200 VERY</div>
+                </div>
+                <div class="data-cell highlight">
+                    <div class="very-coin-badge large">
+                        <i class="fas fa-arrow-up"></i> 월 최대 2,000 VERY
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Content Access -->
+            <div class="comparison-row">
+                <div class="feature-cell">
+                    <div class="feature-icon"><i class="fas fa-lock-open"></i></div>
+                    <div>프리미엄 콘텐츠<br><span style="font-size: 12px; font-weight: 400; color: #94a3b8;">(PRO, BBR 매거진 등)</span></div>
+                </div>
+                <div class="data-cell">
+                    <i class="fas fa-check check-icon"></i>플랜별 차등 제공
+                </div>
+                <div class="data-cell highlight">
+                    <div><i class="fas fa-check-double check-icon"></i>동일 혜택 제공<br>
+                    <span style="font-size: 13px; font-weight: 400;">(계정 연동 시)</span></div>
+                </div>
+            </div>
+
+            <!-- Row 3: Education -->
+            <div class="comparison-row">
+                <div class="feature-cell">
+                    <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+                    아카데미 수강
+                </div>
+                <div class="data-cell">
+                    <i class="fas fa-check check-icon"></i>유료 수강 / 할인
+                </div>
+                <div class="data-cell highlight">
+                    <i class="fas fa-check check-icon"></i>동일 혜택 적용
+                </div>
+            </div>
+
+            <!-- Row 4: Reward Boosting -->
+            <div class="comparison-row">
+                <div class="feature-cell">
+                    <div class="feature-icon"><i class="fas fa-rocket"></i></div>
+                    TPC 리워드 부스팅
+                </div>
+                <div class="data-cell">최대 2~3배 적립</div>
+                <div class="data-cell highlight">
+                    <div>최대 2~3배 적립<br>
+                    <span style="color: #ef4444; font-size: 13px; font-weight: 700;">+ VERY 추가 적립</span></div>
+                </div>
+            </div>
+
+            <!-- Row 5: Community & Alert -->
+            <div class="comparison-row">
+                <div class="feature-cell">
+                    <div class="feature-icon"><i class="fas fa-bell"></i></div>
+                    알림 및 커뮤니티
+                </div>
+                <div class="data-cell">이메일 뉴스레터 / 웹 알림</div>
+                <div class="data-cell highlight">
+                    <div><span style="color: #2563eb; font-weight: 700;">실시간 모바일 푸시</span><br>
+                    <span style="font-size: 13px;">+ 전용 커뮤니티 접근</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-summary">
+            <div class="summary-card">
+                <div class="summary-icon"><i class="fas fa-lightbulb"></i></div>
+                <div class="summary-text">
+                    베리챗 회원은 토큰포스트의 고품질 콘텐츠를 그대로 즐기면서, <span class="summary-highlight">10배 더 강력한 VERY 코인 보상</span>을 획득합니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="slide-nav">
+    <a href="page3.html" class="nav-btn prev"><i class="fas fa-arrow-left"></i> 이전</a>
+    <div class="nav-dots">
+        <a href="page1.html" class="nav-dot"></a>
+        <a href="page2.html" class="nav-dot"></a>
+        <a href="page3.html" class="nav-dot"></a>
+        <a href="page4.html" class="nav-dot active"></a>
+        <a href="page5.html" class="nav-dot"></a>
+        <a href="page6.html" class="nav-dot"></a>
+    </div>
+    <a href="page5.html" class="nav-btn next">다음 <i class="fas fa-arrow-right"></i></a>
+</nav>
+
+<script>
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') window.location.href = 'page3.html';
+    if (e.key === 'ArrowRight') window.location.href = 'page5.html';
+});
+let touchStartX = 0;
+document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', function(e) {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (diff > 50) window.location.href = 'page5.html';
+    if (diff < -50) window.location.href = 'page3.html';
+});
+</script>
+</body>
+</html>

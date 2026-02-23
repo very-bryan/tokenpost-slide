@@ -1,0 +1,9 @@
+{
+  "name": "tokenpost-slide",
+  "version": "1.0.0",
+  "description": "BeVeryChat x TokenPost Partnership Slides",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>제휴 개요 및 목적 (Win-Win)</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .slide-container {
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        padding: 20px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e2e8f0;
+        flex-shrink: 0;
+    }
+
+    .logo-text {
+        font-weight: 800;
+        font-size: 18px;
+        color: #1a202c;
+    }
+
+    .page-number {
+        font-size: 14px;
+        color: #a0aec0;
+    }
+
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .left-col {
+        width: 40%;
+        background-color: #1a202c;
+        color: white;
+        padding: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bg-pattern {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        opacity: 0.05;
+        background-image: radial-gradient(#ffffff 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    .section-tag {
+        background-color: #3b82f6;
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 24px;
+        width: fit-content;
+        position: relative;
+        z-index: 2;
+    }
+
+    .main-title {
+        font-size: clamp(28px, 4vw, 48px);
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 30px;
+        z-index: 2;
+        position: relative;
+    }
+
+    .highlight {
+        color: #60a5fa;
+    }
+
+    .key-message {
+        font-size: clamp(14px, 1.6vw, 20px);
+        font-weight: 400;
+        line-height: 1.6;
+        color: #cbd5e0;
+        z-index: 2;
+        position: relative;
+        border-left: 4px solid #3b82f6;
+        padding-left: 20px;
+    }
+
+    .right-col {
+        width: 60%;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #ffffff;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        width: 100%;
+    }
+
+    .info-card {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 24px;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #bfdbfe;
+    }
+
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        background-color: #ebf8ff;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+    }
+
+    .icon-box i {
+        font-size: 22px;
+        color: #3b82f6;
+    }
+
+    .card-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 10px;
+    }
+
+    .card-desc {
+        font-size: 14px;
+        color: #718096;
+        line-height: 1.5;
+    }
+
+    .kpi-section {
+        margin-top: 24px;
+        background-color: #eff6ff;
+        border-radius: 12px;
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .kpi-label {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e3a8a;
+        display: flex;
+        align-items: center;
+    }
+
+    .kpi-items {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .kpi-item {
+        font-size: 13px;
+        color: #3b82f6;
+        font-weight: 600;
+        background-color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* Navigation */
+    .slide-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+    .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+    .nav-btn.prev { background: #f1f5f9; color: #475569; }
+    .nav-btn.prev:hover { background: #e2e8f0; }
+    .nav-btn.next { background: #3b82f6; color: white; }
+    .nav-btn.next:hover { background: #2563eb; }
+    .nav-btn.hidden { visibility: hidden; }
+    .nav-dots { display: flex; gap: 8px; align-items: center; }
+    .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e0; transition: all 0.2s; text-decoration: none; }
+    .nav-dot:hover { background: #94a3b8; }
+    .nav-dot.active { background: #3b82f6; width: 28px; border-radius: 5px; }
+    .slide-container { padding-bottom: 60px; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .main-content {
+            flex-direction: column;
+        }
+
+        .left-col {
+            width: 100%;
+            padding: 40px 24px;
+        }
+
+        .right-col {
+            width: 100%;
+            padding: 24px;
+        }
+
+        .grid-container {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .kpi-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .kpi-items {
+            width: 100%;
+        }
+
+        .header {
+            padding: 16px 20px;
+        }
+
+        .logo-text {
+            font-size: 16px;
+        }
+    }
+
+    /* Tablet */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .left-col {
+            width: 38%;
+            padding: 40px 30px;
+        }
+
+        .right-col {
+            width: 62%;
+            padding: 30px;
+        }
+
+        .grid-container {
+            gap: 16px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="slide-container">
+    <div class="header">
+        <div class="logo-text">VERYCHAT <span style="color:#cbd5e0; margin:0 5px;">|</span> TOKENPOST</div>
+        <div class="page-number">02</div>
+    </div>
+
+    <div class="main-content">
+        <div class="left-col">
+            <div class="bg-pattern"></div>
+            <div class="section-tag">OVERVIEW</div>
+            <h1 class="main-title">
+                콘텐츠와<br>
+                <span class="highlight">토큰 인센티브</span>의<br>
+                완벽한 결합
+            </h1>
+            <p class="key-message">
+                베리챗의 기술력과 토큰포스트의 콘텐츠 파워를 결합하여, 구독자에게는 실질적인 보상을, 양사에게는 지속 가능한 성장 동력을 제공합니다.
+            </p>
+        </div>
+
+        <div class="right-col">
+            <div class="grid-container">
+                <div class="info-card">
+                    <div class="icon-box"><i class="fas fa-wallet"></i></div>
+                    <h3 class="card-title">1억 VERY 배정 & 락인</h3>
+                    <p class="card-desc">총 1억 VERY를 배정하여 초기 구독자 선점 효과 극대화. 베리챗 지갑 설치를 유도하여 강력한 플랫폼 락인(Lock-in) 효과 창출.</p>
+                </div>
+                <div class="info-card">
+                    <div class="icon-box"><i class="fas fa-users"></i></div>
+                    <h3 class="card-title">저변 확대 & 리워드</h3>
+                    <p class="card-desc">토큰포스트 구독자에게 소량 지급으로 진입 장벽을 낮추고, 베리챗 회원에게는 더 큰 보상을 제공하여 유료 전환 유도.</p>
+                </div>
+                <div class="info-card">
+                    <div class="icon-box"><i class="fas fa-chart-pie"></i></div>
+                    <h3 class="card-title">수익 쉐어 모델</h3>
+                    <p class="card-desc">구독 매출의 <span style="color:#ef4444; font-weight:700;">80%</span>는 토큰포스트, <span style="color:#3b82f6; font-weight:700;">20%</span>는 베리챗에 배분. 안정적인 수익원(Cash Cow) 확보.</p>
+                </div>
+                <div class="info-card">
+                    <div class="icon-box"><i class="fas fa-rocket"></i></div>
+                    <h3 class="card-title">Win-Win 시너지</h3>
+                    <p class="card-desc">토큰포스트는 차별화된 멤버십 혜택 강화, 베리챗은 대규모 실사용자 확보 및 VERY 생태계 활성화 달성.</p>
+                </div>
+            </div>
+
+            <div class="kpi-section">
+                <div class="kpi-label">
+                    <i class="fas fa-bullseye" style="margin-right: 10px;"></i> 핵심 KPI
+                </div>
+                <div class="kpi-items">
+                    <div class="kpi-item">구독 전환율</div>
+                    <div class="kpi-item">지갑 설치율</div>
+                    <div class="kpi-item">월간 활성(MAU)</div>
+                    <div class="kpi-item">리텐션</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="slide-nav">
+    <a href="page1.html" class="nav-btn prev"><i class="fas fa-arrow-left"></i> 이전</a>
+    <div class="nav-dots">
+        <a href="page1.html" class="nav-dot"></a>
+        <a href="page2.html" class="nav-dot active"></a>
+        <a href="page3.html" class="nav-dot"></a>
+        <a href="page4.html" class="nav-dot"></a>
+        <a href="page5.html" class="nav-dot"></a>
+        <a href="page6.html" class="nav-dot"></a>
+    </div>
+    <a href="page3.html" class="nav-btn next">다음 <i class="fas fa-arrow-right"></i></a>
+</nav>
+
+<script>
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') window.location.href = 'page1.html';
+    if (e.key === 'ArrowRight') window.location.href = 'page3.html';
+});
+let touchStartX = 0;
+document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', function(e) {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (diff > 50) window.location.href = 'page3.html';
+    if (diff < -50) window.location.href = 'page1.html';
+});
+</script>
+</body>
+</html>

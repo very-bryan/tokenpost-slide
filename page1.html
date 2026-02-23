@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>베리챗 x 토큰포스트 전략적 제휴 제안</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #f3f4f6;
+        min-height: 100vh;
+    }
+
+    .slide-container {
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bg-shape-1 {
+        position: absolute;
+        top: -100px;
+        right: -50px;
+        width: 600px;
+        height: 600px;
+        background-color: #1a202c;
+        border-radius: 50%;
+        opacity: 0.05;
+        z-index: 1;
+    }
+
+    .bg-shape-2 {
+        position: absolute;
+        bottom: -150px;
+        left: -100px;
+        width: 700px;
+        height: 700px;
+        background-color: #3b82f6;
+        border-radius: 50%;
+        opacity: 0.03;
+        z-index: 1;
+    }
+
+    .content-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        padding: 60px 40px;
+    }
+
+    .logo-area {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .logo-placeholder {
+        font-weight: 900;
+        font-size: 24px;
+        color: #1a202c;
+        display: flex;
+        align-items: center;
+    }
+
+    .logo-divider {
+        margin: 0 16px;
+        color: #cbd5e0;
+        font-size: 20px;
+    }
+
+    .main-title {
+        font-size: clamp(32px, 5vw, 64px);
+        font-weight: 900;
+        color: #1a202c;
+        line-height: 1.2;
+        text-align: center;
+        margin-bottom: 16px;
+        letter-spacing: -1px;
+    }
+
+    .highlight-text {
+        color: #3b82f6;
+    }
+
+    .subtitle {
+        font-size: clamp(16px, 2.5vw, 28px);
+        font-weight: 400;
+        color: #4a5568;
+        margin-bottom: 48px;
+        text-align: center;
+        letter-spacing: -0.5px;
+        line-height: 1.5;
+    }
+
+    .key-points-container {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        width: 100%;
+        max-width: 1000px;
+        flex-wrap: wrap;
+    }
+
+    .key-point-card {
+        flex: 1;
+        min-width: 240px;
+        max-width: 320px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .key-point-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.15);
+    }
+
+    .key-point-icon {
+        font-size: 32px;
+        color: #3b82f6;
+        margin-bottom: 16px;
+    }
+
+    .key-point-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 8px;
+    }
+
+    .key-point-desc {
+        font-size: 14px;
+        color: #718096;
+        line-height: 1.5;
+    }
+
+    .footer-decoration {
+        width: 100%;
+        height: 8px;
+        background: linear-gradient(90deg, #1e3a8a, #3b82f6, #60a5fa);
+    }
+
+    .date-tag {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        font-size: 14px;
+        color: #a0aec0;
+        font-weight: 500;
+        z-index: 10;
+    }
+
+    /* Navigation */
+    .slide-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid #e2e8f0;
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 100;
+    }
+
+    .nav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .nav-btn.prev {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .nav-btn.prev:hover {
+        background: #e2e8f0;
+    }
+
+    .nav-btn.next {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .nav-btn.next:hover {
+        background: #2563eb;
+    }
+
+    .nav-btn.hidden {
+        visibility: hidden;
+    }
+
+    .nav-dots {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .nav-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #cbd5e0;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .nav-dot:hover {
+        background: #94a3b8;
+    }
+
+    .nav-dot.active {
+        background: #3b82f6;
+        width: 28px;
+        border-radius: 5px;
+    }
+
+    .slide-container {
+        padding-bottom: 60px;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            padding: 40px 20px;
+        }
+
+        .logo-placeholder {
+            font-size: 20px;
+        }
+
+        .logo-divider {
+            margin: 0 10px;
+        }
+
+        .key-points-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .key-point-card {
+            min-width: 100%;
+            max-width: 100%;
+        }
+
+        .subtitle {
+            margin-bottom: 32px;
+        }
+
+        .bg-shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            right: -30px;
+        }
+
+        .bg-shape-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -100px;
+            left: -80px;
+        }
+    }
+
+    /* Tablet */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .content-wrapper {
+            padding: 50px 30px;
+        }
+
+        .key-points-container {
+            gap: 20px;
+        }
+
+        .key-point-card {
+            min-width: 200px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="slide-container">
+    <div class="bg-shape-1"></div>
+    <div class="bg-shape-2"></div>
+    <div class="date-tag">2026.02.22</div>
+
+    <div class="content-wrapper">
+        <div class="logo-area">
+            <div class="logo-placeholder">
+                <span style="color: #3b82f6;">VERY</span>CHAT
+            </div>
+            <div class="logo-divider"><i class="fas fa-times"></i></div>
+            <div class="logo-placeholder">
+                TOKEN<span style="color: #718096;">POST</span>
+            </div>
+        </div>
+
+        <h1 class="main-title">전략적 제휴 제안서</h1>
+        <h1 class="main-title"><span class="highlight-text">토큰포스트</span> × <span class="highlight-text">베리챗</span></h1>
+
+        <p class="subtitle">
+            콘텐츠와 토큰 이코노미의 결합으로<br>
+            구독 전환율과 사용자 가치를 극대화합니다
+        </p>
+
+        <div class="key-points-container">
+            <div class="key-point-card">
+                <div class="key-point-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <p class="key-point-title">고품질 정보 접근</p>
+                <p class="key-point-desc">토큰포스트의 전문 콘텐츠와<br>베리챗 플랫폼의 결합</p>
+            </div>
+            <div class="key-point-card">
+                <div class="key-point-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <p class="key-point-title">VERY 코인 보급</p>
+                <p class="key-point-desc">구독자 전원 보상 지급으로<br>코인 생태계 저변 확대</p>
+            </div>
+            <div class="key-point-card">
+                <div class="key-point-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <p class="key-point-title">안정적 수익 창출</p>
+                <p class="key-point-desc">구독 수수료 쉐어를 통한<br>지속 가능한 수익 모델</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-decoration"></div>
+</div>
+
+<nav class="slide-nav">
+    <a class="nav-btn prev hidden"><i class="fas fa-arrow-left"></i> 이전</a>
+    <div class="nav-dots">
+        <a href="page1.html" class="nav-dot active"></a>
+        <a href="page2.html" class="nav-dot"></a>
+        <a href="page3.html" class="nav-dot"></a>
+        <a href="page4.html" class="nav-dot"></a>
+        <a href="page5.html" class="nav-dot"></a>
+        <a href="page6.html" class="nav-dot"></a>
+    </div>
+    <a href="page2.html" class="nav-btn next">다음 <i class="fas fa-arrow-right"></i></a>
+</nav>
+
+<script>
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight') window.location.href = 'page2.html';
+});
+let touchStartX = 0;
+document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', function(e) {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (diff > 50) window.location.href = 'page2.html';
+});
+</script>
+</body>
+</html>

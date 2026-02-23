@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수익 예상 시뮬레이션</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .slide-container {
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        padding: 20px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e2e8f0;
+        background-color: #fff;
+        z-index: 10;
+        flex-shrink: 0;
+    }
+
+    .header-title {
+        font-size: clamp(16px, 2.2vw, 24px);
+        font-weight: 800;
+        color: #1e3a8a;
+        letter-spacing: -0.5px;
+    }
+
+    .page-number {
+        font-size: 14px;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .content-area {
+        flex: 1;
+        padding: 24px 40px;
+        display: flex;
+        gap: 24px;
+        background-color: #f8fafc;
+    }
+
+    .left-panel {
+        flex: 1.6;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .assumptions-box {
+        display: flex;
+        gap: 16px;
+    }
+
+    .assumption-card {
+        flex: 1;
+        background-color: white;
+        border-radius: 12px;
+        padding: 14px 18px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        display: flex;
+        align-items: center;
+    }
+
+    .assumption-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background-color: #eff6ff;
+        color: #3b82f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        margin-right: 14px;
+        flex-shrink: 0;
+    }
+
+    .assumption-icon.mixed {
+        background-color: #f0fdf4;
+        color: #10b981;
+    }
+
+    .assumption-text h4 {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0 0 4px 0;
+        font-weight: 600;
+    }
+
+    .assumption-text p {
+        font-size: 17px;
+        color: #1e293b;
+        margin: 0;
+        font-weight: 800;
+    }
+
+    .simulation-table-container {
+        background-color: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        flex: 1;
+    }
+
+    .table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .simulation-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 500px;
+    }
+
+    .simulation-table th {
+        background-color: #f1f5f9;
+        color: #475569;
+        font-weight: 700;
+        padding: 14px 12px;
+        text-align: right;
+        font-size: 13px;
+        border-bottom: 2px solid #e2e8f0;
+        white-space: nowrap;
+    }
+
+    .simulation-table th:first-child {
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .simulation-table td {
+        padding: 16px 12px;
+        text-align: right;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .simulation-table td:first-child {
+        text-align: left;
+        padding-left: 20px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .simulation-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .row-group-start {
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .highlight-tp {
+        color: #1e3a8a;
+        font-weight: 700;
+        background-color: #f8fafc;
+    }
+
+    .highlight-vc {
+        color: #2563eb;
+        font-weight: 700;
+        background-color: #eff6ff;
+    }
+
+    .scenario-tag {
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: 6px;
+        font-weight: 600;
+    }
+
+    .tag-basic {
+        background-color: #e2e8f0;
+        color: #475569;
+    }
+
+    .tag-mixed {
+        background-color: #dcfce7;
+        color: #15803d;
+    }
+
+    .right-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .share-model-card {
+        background-color: #1e293b;
+        color: white;
+        border-radius: 16px;
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .share-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .share-title {
+        font-size: 13px;
+        color: #94a3b8;
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .share-value {
+        font-size: 30px;
+        font-weight: 900;
+        color: white;
+    }
+
+    .sub-text {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 4px;
+    }
+
+    .share-chart-mini {
+        width: 70px;
+        height: 70px;
+        position: relative;
+    }
+
+    .chart-card {
+        background-color: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chart-card h3 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 16px;
+    }
+
+    .chart-legend {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 12px;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+
+    /* Navigation */
+    .slide-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+    .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+    .nav-btn.prev { background: #f1f5f9; color: #475569; }
+    .nav-btn.prev:hover { background: #e2e8f0; }
+    .nav-btn.next { background: #3b82f6; color: white; }
+    .nav-btn.next:hover { background: #2563eb; }
+    .nav-btn.hidden { visibility: hidden; }
+    .nav-dots { display: flex; gap: 8px; align-items: center; }
+    .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e0; transition: all 0.2s; text-decoration: none; }
+    .nav-dot:hover { background: #94a3b8; }
+    .nav-dot.active { background: #3b82f6; width: 28px; border-radius: 5px; }
+    .slide-container { padding-bottom: 60px; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .header {
+            padding: 16px 20px;
+        }
+
+        .content-area {
+            flex-direction: column;
+            padding: 20px 16px;
+            gap: 16px;
+        }
+
+        .assumptions-box {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .share-model-card {
+            padding: 16px 20px;
+        }
+
+        .share-value {
+            font-size: 24px;
+        }
+
+        .simulation-table td,
+        .simulation-table th {
+            padding: 12px 8px;
+            font-size: 12px;
+        }
+    }
+
+    /* Tablet */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .content-area {
+            padding: 20px 24px;
+            gap: 20px;
+        }
+
+        .left-panel {
+            flex: 1.4;
+        }
+
+        .right-panel {
+            flex: 1;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="slide-container">
+    <div class="header">
+        <div class="header-title">수익 예상 시뮬레이션 (Revenue Share)</div>
+        <div class="page-number">05</div>
+    </div>
+
+    <div class="content-area">
+        <div class="left-panel">
+            <div class="assumptions-box">
+                <div class="assumption-card">
+                    <div class="assumption-icon"><i class="fas fa-cube"></i></div>
+                    <div class="assumption-text">
+                        <h4>Option A (Basic)</h4>
+                        <p>ARPU 20,000원</p>
+                    </div>
+                </div>
+                <div class="assumption-card">
+                    <div class="assumption-icon mixed"><i class="fas fa-layer-group"></i></div>
+                    <div class="assumption-text">
+                        <h4>Option B (Mixed)</h4>
+                        <p>ARPU 28,000원</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="simulation-table-container">
+                <div class="table-scroll">
+                    <table class="simulation-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 25%">구독자 규모</th>
+                            <th style="width: 25%">월 예상 매출</th>
+                            <th style="width: 25%; color: #1e3a8a;">토큰포스트 (80%)</th>
+                            <th style="width: 25%; color: #2563eb;">베리챗 (20%)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="row-group-start">
+                            <td rowspan="2" style="vertical-align: middle; border-bottom: 1px solid #e2e8f0;">
+                                <div style="font-size: 17px;">1,000 명</div>
+                                <div style="font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 4px;">초기 진입 단계</div>
+                            </td>
+                            <td>2,000 만원 <span class="scenario-tag tag-basic">A</span></td>
+                            <td class="highlight-tp">1,600 만원</td>
+                            <td class="highlight-vc">400 만원</td>
+                        </tr>
+                        <tr>
+                            <td style="border-bottom: 2px solid #e2e8f0;">2,800 만원 <span class="scenario-tag tag-mixed">B</span></td>
+                            <td class="highlight-tp" style="border-bottom: 2px solid #e2e8f0;">2,240 만원</td>
+                            <td class="highlight-vc" style="border-bottom: 2px solid #e2e8f0;">560 만원</td>
+                        </tr>
+                        <tr class="row-group-start">
+                            <td rowspan="2" style="vertical-align: middle; border-bottom: 1px solid #e2e8f0;">
+                                <div style="font-size: 17px;">5,000 명</div>
+                                <div style="font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 4px;">성장 가속 단계</div>
+                            </td>
+                            <td>1 억원 <span class="scenario-tag tag-basic">A</span></td>
+                            <td class="highlight-tp">8,000 만원</td>
+                            <td class="highlight-vc">2,000 만원</td>
+                        </tr>
+                        <tr>
+                            <td style="border-bottom: 2px solid #e2e8f0;">1.4 억원 <span class="scenario-tag tag-mixed">B</span></td>
+                            <td class="highlight-tp" style="border-bottom: 2px solid #e2e8f0;">1.12 억원</td>
+                            <td class="highlight-vc" style="border-bottom: 2px solid #e2e8f0;">2,800 만원</td>
+                        </tr>
+                        <tr class="row-group-start">
+                            <td rowspan="2" style="vertical-align: middle;">
+                                <div style="font-size: 17px;">10,000 명</div>
+                                <div style="font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 4px;">생태계 확장 단계</div>
+                            </td>
+                            <td>2 억원 <span class="scenario-tag tag-basic">A</span></td>
+                            <td class="highlight-tp">1.6 억원</td>
+                            <td class="highlight-vc">4,000 만원</td>
+                        </tr>
+                        <tr>
+                            <td>2.8 억원 <span class="scenario-tag tag-mixed">B</span></td>
+                            <td class="highlight-tp">2.24 억원</td>
+                            <td class="highlight-vc">5,600 만원</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="share-model-card">
+                <div class="share-info">
+                    <div class="share-title">수익 쉐어 모델</div>
+                    <div class="share-value">20%</div>
+                    <div class="sub-text">베리챗 수수료</div>
+                </div>
+                <div class="share-chart-mini">
+                    <canvas id="sharePieChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>수익 성장 추이 (Option A)</h3>
+                <div style="flex: 1; position: relative; min-height: 200px;">
+                    <canvas id="growthChart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background-color: #1e3a8a;"></div>토큰포스트</div>
+                    <div class="legend-item"><div class="legend-dot" style="background-color: #3b82f6;"></div>베리챗</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const pieCtx = document.getElementById('sharePieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['토큰포스트', '베리챗'],
+            datasets: [{
+                data: [80, 20],
+                backgroundColor: ['rgba(255, 255, 255, 0.2)', '#3b82f6'],
+                borderWidth: 0,
+                cutout: '70%'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+            animation: { animateScale: true }
+        }
+    });
+
+    const barCtx = document.getElementById('growthChart').getContext('2d');
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: ['1K', '5K', '10K'],
+            datasets: [
+                {
+                    label: '베리챗 수익',
+                    data: [400, 2000, 4000],
+                    backgroundColor: '#3b82f6',
+                    barPercentage: 0.5,
+                    stack: 'Stack 0'
+                },
+                {
+                    label: '토큰포스트 수익',
+                    data: [1600, 8000, 16000],
+                    backgroundColor: '#1e3a8a',
+                    barPercentage: 0.5,
+                    stack: 'Stack 0',
+                    borderRadius: { topLeft: 6, topRight: 6 }
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('ko-KR').format(context.parsed.y) + '만원';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { family: "'Noto Sans KR', sans-serif" } }
+                },
+                y: {
+                    grid: { borderDash: [2, 4], color: '#f1f5f9' },
+                    ticks: {
+                        callback: function(value) { return value / 1000 + '억'; },
+                        font: { size: 10 }
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+<nav class="slide-nav">
+    <a href="page4.html" class="nav-btn prev"><i class="fas fa-arrow-left"></i> 이전</a>
+    <div class="nav-dots">
+        <a href="page1.html" class="nav-dot"></a>
+        <a href="page2.html" class="nav-dot"></a>
+        <a href="page3.html" class="nav-dot"></a>
+        <a href="page4.html" class="nav-dot"></a>
+        <a href="page5.html" class="nav-dot active"></a>
+        <a href="page6.html" class="nav-dot"></a>
+    </div>
+    <a href="page6.html" class="nav-btn next">다음 <i class="fas fa-arrow-right"></i></a>
+</nav>
+
+<script>
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') window.location.href = 'page4.html';
+    if (e.key === 'ArrowRight') window.location.href = 'page6.html';
+});
+let touchStartX = 0;
+document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', function(e) {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (diff > 50) window.location.href = 'page6.html';
+    if (diff < -50) window.location.href = 'page4.html';
+});
+</script>
+</body>
+</html>
