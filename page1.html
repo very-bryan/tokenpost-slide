@@ -378,6 +378,7 @@
 </nav>
 
 <script>
+if (window.self !== window.top) document.querySelector('.slide-nav').style.display='none';
 document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowRight') window.location.href = 'page2.html';
 });
