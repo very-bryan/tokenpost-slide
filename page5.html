@@ -396,63 +396,63 @@
                     <table class="simulation-table">
                         <thead>
                         <tr>
-                            <th style="width: 18%">구독자 규모</th>
-                            <th style="width: 18%">월 예상 매출</th>
-                            <th style="width: 18%; color: #f59e0b;">연 예상 매출</th>
-                            <th style="width: 23%; color: #1e3a8a;">토큰포스트 (70%)</th>
-                            <th style="width: 23%; color: #2563eb;">베리챗 (30%)</th>
+                            <th style="width: 16%">구독자 규모</th>
+                            <th style="width: 14%">MRR (월)</th>
+                            <th style="width: 16%; color: #f59e0b;">ARR (연)</th>
+                            <th style="width: 18%; color: #1e3a8a;">토큰포스트 70%</th>
+                            <th style="width: 18%; color: #2563eb;">베리챗 30%</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td>
                                 <div style="font-size: 17px;">500 명</div>
-                                <div class="tier-label">시범 운영 단계</div>
+                                <div class="tier-label">시범 운영</div>
                             </td>
                             <td>900 만원</td>
                             <td class="highlight-annual">1.08 억원</td>
-                            <td class="highlight-tp">630 만원</td>
-                            <td class="highlight-vc">270 만원</td>
+                            <td class="highlight-tp">7,560 만원</td>
+                            <td class="highlight-vc">3,240 만원</td>
                         </tr>
                         <tr>
                             <td>
                                 <div style="font-size: 17px;">1,000 명</div>
-                                <div class="tier-label">초기 진입 단계</div>
+                                <div class="tier-label">초기 진입</div>
                             </td>
                             <td>1,800 만원</td>
                             <td class="highlight-annual">2.16 억원</td>
-                            <td class="highlight-tp">1,260 만원</td>
-                            <td class="highlight-vc">540 만원</td>
+                            <td class="highlight-tp">1.51 억원</td>
+                            <td class="highlight-vc">6,480 만원</td>
                         </tr>
                         <tr>
                             <td>
                                 <div style="font-size: 17px;">5,000 명</div>
-                                <div class="tier-label">성장 가속 단계</div>
+                                <div class="tier-label">성장 가속</div>
                             </td>
                             <td>9,000 만원</td>
                             <td class="highlight-annual">10.8 억원</td>
-                            <td class="highlight-tp">6,300 만원</td>
-                            <td class="highlight-vc">2,700 만원</td>
+                            <td class="highlight-tp">7.56 억원</td>
+                            <td class="highlight-vc">3.24 억원</td>
                         </tr>
                         <tr>
                             <td>
                                 <div style="font-size: 17px;">10,000 명</div>
-                                <div class="tier-label">생태계 확장 단계</div>
+                                <div class="tier-label">생태계 확장</div>
                             </td>
                             <td>1.8 억원</td>
                             <td class="highlight-annual">21.6 억원</td>
-                            <td class="highlight-tp">1.26 억원</td>
-                            <td class="highlight-vc">5,400 만원</td>
+                            <td class="highlight-tp">15.12 억원</td>
+                            <td class="highlight-vc">6.48 억원</td>
                         </tr>
                         <tr>
                             <td>
                                 <div style="font-size: 17px;">20,000 명</div>
-                                <div class="tier-label">시장 지배 단계</div>
+                                <div class="tier-label">시장 지배</div>
                             </td>
                             <td>3.6 억원</td>
                             <td class="highlight-annual">43.2 억원</td>
-                            <td class="highlight-tp">2.52 억원</td>
-                            <td class="highlight-vc">1.08 억원</td>
+                            <td class="highlight-tp">30.24 억원</td>
+                            <td class="highlight-vc">12.96 억원</td>
                         </tr>
                         </tbody>
                     </table>
@@ -484,7 +484,7 @@
             </div>
 
             <div class="chart-card">
-                <h3>구독자별 수익 성장 추이</h3>
+                <h3>구독자별 ARR 수익 추이</h3>
                 <div style="flex: 1; position: relative; min-height: 200px;">
                     <canvas id="growthChart"></canvas>
                 </div>
@@ -525,15 +525,15 @@
             labels: ['500', '1K', '5K', '10K', '20K'],
             datasets: [
                 {
-                    label: '베리챗 수익',
-                    data: [270, 540, 2700, 5400, 10800],
+                    label: '베리챗 (ARR)',
+                    data: [3240, 6480, 32400, 64800, 129600],
                     backgroundColor: '#3b82f6',
                     barPercentage: 0.5,
                     stack: 'Stack 0'
                 },
                 {
-                    label: '토큰포스트 수익',
-                    data: [630, 1260, 6300, 12600, 25200],
+                    label: '토큰포스트 (ARR)',
+                    data: [7560, 15120, 75600, 151200, 302400],
                     backgroundColor: '#1e3a8a',
                     barPercentage: 0.5,
                     stack: 'Stack 0',
@@ -554,7 +554,12 @@
                             let label = context.dataset.label || '';
                             if (label) { label += ': '; }
                             if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('ko-KR').format(context.parsed.y) + '만원';
+                                const v = context.parsed.y;
+                                if (v >= 10000) {
+                                    label += (v / 10000).toFixed(1).replace(/\.0$/, '') + '억원';
+                                } else {
+                                    label += new Intl.NumberFormat('ko-KR').format(v) + '만원';
+                                }
                             }
                             return label;
                         }
@@ -571,8 +576,7 @@
                     ticks: {
                         callback: function(value) {
                             if (value >= 10000) return (value / 10000) + '억';
-                            if (value >= 1000) return (value / 1000).toFixed(1) + '억';
-                            return value / 1000 + '억';
+                            return value >= 1000 ? (value / 10000).toFixed(1) + '억' : '';
                         },
                         font: { size: 10 }
                     },
